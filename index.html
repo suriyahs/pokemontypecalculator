@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Weak/Resist Calculator</title>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #000206;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        .watermark {
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            color: #FFA500; 
+            font-weight: 500;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            transition: text-shadow 0.3s ease-out, color 0.3s ease-out;
+        }
+
+        .watermark:hover {
+            color: #FFD700;
+            cursor: default;
+            text-shadow: 0 0 5px #FFA500,
+                         0 0 10px #FF8C00,
+                         0 0 15px #FF4500;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #282828;
+            border-radius: 12px;
+            border: 1px solid #444; 
+            padding: 24px;
+            box-sizing: border-box; 
+        }
+
+        h1 {
+            text-align: center;
+            color: #f5f5f5; 
+            margin-top: 0;
+            margin-bottom: 24px;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 16px; 
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            flex: 1; 
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #b0b0b0; 
+        }
+
+        select {
+            font-size: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #555; 
+            background-color: #333; 
+            color: #f5f5f5; 
+            cursor: pointer;
+        }
+
+        
+        button {
+            width: 100%;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 14px;
+            border-radius: 8px;
+            border: none;
+            background-color: #4a4a4a; 
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #370000; 
+        }
+
+        #results {
+            margin-top: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .result-category {
+            flex: 1;
+            min-width: 200px;
+            background-color: #3a3a3a; 
+            border: 1px solid #555; 
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .result-category h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #555; 
+            padding-bottom: 8px;
+        }
+        
+        
+        .weak-4x h3 { border-color: #d90429; color: #d90429; }
+        .weak-2x h3 { border-color: #ef476f; color: #ef476f; }
+        .resist-half h3 { border-color: #06d6a0; color: #06d6a0; }
+        .resist-quarter h3 { border-color: #04a777; color: #04a777; }
+        .immune h3 { border-color: #888; color: #888; } 
+
+        .type-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding-left: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        
+        .type-pill {
+            font-weight: 500;
+            color: #ffffff; 
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        #results p {
+            color: #e0e0e0;
+        }
+
+        /* pokemon type colors */
+        .type-normal { background-color: #A8A878; }
+        .type-fire { background-color: #F08030; }
+        .type-water { background-color: #6890F0; }
+        .type-electric { background-color: #F8D030; color: #000; } /* dark text */
+        .type-grass { background-color: #78C850; }
+        .type-ice { background-color: #98D8D8; }
+        .type-fighting { background-color: #C03028; }
+        .type-poison { background-color: #A040A0; }
+        .type-ground { background-color: #E0C068; }
+        .type-flying { background-color: #A890F0; }
+        .type-psychic { background-color: #F85888; }
+        .type-bug { background-color: #A8B820; }
+        .type-rock { background-color: #B8A038; }
+        .type-ghost { background-color: #705898; }
+        .type-dragon { background-color: #7038F8; }
+        .type-dark { background-color: #705848; }
+        .type-steel { background-color: #B8B8D0; color: #000; } 
+        .type-fairy { background-color: #EE99AC; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Pokémon Weak/Resist Calculator</h1>
+        
+        <div class="input-area">
+            <div class="input-group">
+                <label for="type1">Type 1</label>
+                <select id="type1"></select>
+            </div>
+            <div class="input-group">
+                <label for="type2">Type 2</label>
+                <select id="type2"></select>
+            </div>
+        </div>
+        
+        <button id="clearBtn">Clear</button>
+        
+        <div id="results">
+            </div>
+    </div>
+    <div class="watermark">Designed by ASURA</div>
+
+    <script>
+        // type effectiveness chart
+        const typeChart = {
+            'Normal': {'Fighting': 2, 'Ghost': 0},
+            'Fire': {'Fire': 0.5, 'Water': 2, 'Grass': 0.5, 'Ice': 0.5, 'Ground': 2, 'Bug': 0.5, 'Rock': 2, 'Steel': 0.5, 'Fairy': 0.5},
+            'Water': {'Fire': 0.5, 'Water': 0.5, 'Electric': 2, 'Grass': 2, 'Ice': 0.5, 'Steel': 0.5},
+            'Electric': {'Electric': 0.5, 'Ground': 2, 'Flying': 0.5, 'Steel': 0.5},
+            'Grass': {'Fire': 2, 'Water': 0.5, 'Electric': 0.5, 'Grass': 0.5, 'Ice': 2, 'Poison': 2, 'Ground': 0.5, 'Flying': 2, 'Bug': 2},
+            'Ice': {'Fire': 2, 'Ice': 0.5, 'Fighting': 2, 'Rock': 2, 'Steel': 2},
+            'Fighting': {'Flying': 2, 'Psychic': 2, 'Fairy': 2, 'Bug': 0.5, 'Rock': 0.5, 'Dark': 0.5},
+            'Poison': {'Ground': 2, 'Psychic': 2, 'Fighting': 0.5, 'Poison': 0.5, 'Grass': 0.5, 'Bug': 0.5, 'Fairy': 0.5},
+            'Ground': {'Water': 2, 'Grass': 2, 'Ice': 2, 'Poison': 0.5, 'Rock': 0.5, 'Electric': 0},
+            'Flying': {'Electric': 2, 'Ice': 2, 'Rock': 2, 'Grass': 0.5, 'Fighting': 0.5, 'Bug': 0.5, 'Ground': 0},
+            'Psychic': {'Bug': 2, 'Ghost': 2, 'Dark': 2, 'Fighting': 0.5, 'Psychic': 0.5},
+            'Bug': {'Fire': 2, 'Flying': 2, 'Rock': 2, 'Grass': 0.5, 'Fighting': 0.5, 'Ground': 0.5},
+            'Rock': {'Normal': 0.5, 'Fire': 0.5, 'Water': 2, 'Grass': 2, 'Fighting': 2, 'Poison': 0.5, 'Ground': 2, 'Flying': 0.5},
+            'Ghost': {'Ghost': 2, 'Dark': 2, 'Normal': 0, 'Fighting': 0, 'Poison': 0.5, 'Bug': 0.5},
+            'Dragon': {'Ice': 2, 'Dragon': 2, 'Fairy': 2, 'Fire': 0.5, 'Water': 0.5, 'Electric': 0.5, 'Grass': 0.5},
+            'Dark': {'Fighting': 2, 'Bug': 2, 'Fairy': 2, 'Ghost': 0.5, 'Dark': 0.5, 'Psychic': 0},
+            'Steel': {'Fire': 2, 'Fighting': 2, 'Ground': 2, 'Normal': 0.5, 'Grass': 0.5, 'Ice': 0.5, 'Flying': 0.5, 'Psychic': 0.5, 'Bug': 0.5, 'Rock': 0.5, 'Dragon': 0.5, 'Steel': 0.5, 'Fairy': 0.5, 'Poison': 0},
+            'Fairy': {'Poison': 2, 'Steel': 2, 'Fighting': 0.5, 'Bug': 0.5, 'Dark': 0.5, 'Dragon': 0}
+        };
+
+        // get a list of all type names
+        const allTypes = Object.keys(typeChart).sort();
+
+        // get the html elements we need
+        const type1Select = document.getElementById('type1');
+        const type2Select = document.getElementById('type2');
+        const clearBtn = document.getElementById('clearBtn'); // Renamed this
+        const resultsDiv = document.getElementById('results');
+
+        // this function runs when the page first loads
+        function initialize() {
+            const placeholderOption = document.createElement('option');
+            placeholderOption.value = ''; 
+            placeholderOption.textContent = 'Select a Type...';
+            placeholderOption.selected = true; 
+            placeholderOption.disabled = true; 
+            type1Select.appendChild(placeholderOption);
+           
+            for (const type of allTypes) {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                type1Select.appendChild(option);
+            }
+
+            const noneOption = document.createElement('option');
+            noneOption.value = 'None';
+            noneOption.textContent = '(None)';
+            type2Select.appendChild(noneOption);
+
+            for (const type of allTypes) {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                type2Select.appendChild(option);
+            }
+
+            // --- NEW: Add event listeners ---
+            type1Select.addEventListener('change', calculateWeaknesses);
+            type2Select.addEventListener('change', calculateWeaknesses);
+            clearBtn.addEventListener('click', clearSelections);
+        }
+
+        // --- NEW: Function to clear selections ---
+        function clearSelections() {
+            type1Select.value = ''; // Resets to the placeholder
+            type2Select.value = 'None';
+            resultsDiv.innerHTML = ''; // Clears the results
+        }
+
+        // this function runs when the button is clicked OR dropdowns change
+        function calculateWeaknesses() {
+            const type1 = type1Select.value;
+            let type2 = type2Select.value;
+            
+            // stop only if BOTH are unselected
+            if (type1 === '' && type2 === 'None') {
+                resultsDiv.innerHTML = '';
+                return; 
+            }
+            // prevent selecting the same type twice
+            if (type1 === type2) {
+                type2 = 'None';
+                type2Select.value = 'None'; 
+            }
+
+            let weaknesses4x = [];
+            let weaknesses2x = [];
+            let resistancesHalf = [];
+            let resistancesQuarter = [];
+            let immunities = [];
+
+            for (const attackType of allTypes) {
+                // start both multipliers at 1 (neutral)
+                let mult1 = 1.0;
+                let mult2 = 1.0;
+
+                // get the multipliers from the type chart
+                if (type1 !== '') {
+                    mult1 = typeChart[type1][attackType] ?? 1.0;
+                }
+                if (type2 !== 'None') {
+                    mult2 = typeChart[type2][attackType] ?? 1.0;
+                }
+                
+                const finalMultiplier = mult1 * mult2;
+                // categorize based on final multiplier
+                if (finalMultiplier === 4) {
+                    weaknesses4x.push(attackType);
+                } else if (finalMultiplier === 2) {
+                    weaknesses2x.push(attackType);
+                } else if (finalMultiplier === 0.5) {
+                    resistancesHalf.push(attackType);
+                } else if (finalMultiplier === 0.25) {
+                    resistancesQuarter.push(attackType);
+                } else if (finalMultiplier === 0) {
+                    immunities.push(attackType);
+                }
+            }
+            displayResults(weaknesses4x, weaknesses2x, resistancesHalf, resistancesQuarter, immunities);
+        }
+
+        function displayResults(w4, w2, rHalf, rQuarter, immune) {
+            resultsDiv.innerHTML = '';
+            
+            let html = '';
+
+            function createCategoryHTML(title, types, className) {
+                if (types.length === 0) {
+                    return '';
+                }
+                
+                let typeHTML = '';
+                for (const type of types) {
+                    // --- MODIFIED: Added CSS classes for coloring ---
+                    typeHTML += `<li class="type-pill type-${type.toLowerCase()}">${type}</li>`;
+                }
+
+                return `
+                    <div class="result-category ${className}">
+                        <h3>${title}</h3>
+                        <ul class="type-list">
+                            ${typeHTML}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            html += createCategoryHTML('4x Extremely Weak', w4, 'weak-4x');
+            html += createCategoryHTML('2x Weak', w2, 'weak-2x');
+            html += createCategoryHTML('0.5x Resists', rHalf, 'resist-half');
+            html += createCategoryHTML('0.25x Super Resists', rQuarter, 'resist-quarter');
+            html += createCategoryHTML('Immune', immune, 'immune');
+            
+            if (html === '') {
+                html = '<p>This type combination has no special weaknesses, resistances, or immunities.</p>';
+            }
+
+            resultsDiv.innerHTML = html;
+        }
+
+        // run initialize function when page loads up
+        document.addEventListener('DOMContentLoaded', initialize);
+
+    </script>
+
+</body>
+</html>
