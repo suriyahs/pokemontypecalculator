@@ -349,11 +349,11 @@
                 `;
             }
 
-            html += createCategoryHTML('4x Extremely Weak', w4, 'weak-4x');
-            html += createCategoryHTML('2x Weak', w2, 'weak-2x');
+            html += createCategoryHTML('4x Extremely Weak to', w4, 'weak-4x');
+            html += createCategoryHTML('2x Weak to', w2, 'weak-2x');
             html += createCategoryHTML('0.5x Resists', rHalf, 'resist-half');
             html += createCategoryHTML('0.25x Super Resists', rQuarter, 'resist-quarter');
-            html += createCategoryHTML('Immune', immune, 'immune');
+            html += createCategoryHTML('Immune to', immune, 'immune');
             
             if (html === '') {
                 html = '<p>This type combination has no special weaknesses, resistances, or immunities.</p>';
@@ -368,4 +368,5 @@
     </script>
 
 </body>
+
 </html>
